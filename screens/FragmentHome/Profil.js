@@ -28,25 +28,14 @@ export default function Profil() {
       <TextInput onChangeText={e=>{setData({nom,prenom,pseudo:e})}} placeholder="pseudo" style={styles.TextInput}></TextInput>
       <TouchableOpacity style={styles.button}
        onPress={()=>{
-        database.ref("profils").child("profil").set({
+        database.ref("profils").child(`profil_${name}`).set({
             nom,
             prenom,
             pseudo,
         });
     }}>
-        
         <Text style={{textAlign:"center",fontWeight:"bold",fontSize:18,color:'white'}}>Save</Text>
-
       </TouchableOpacity>
-      {/* <Button style={styles.button}
-      onPress={()=>{
-          database.ref("profils").child("profil").set({
-              nom:"nom",
-              prenom:"ppp",
-              pseudo:"sss",
-          });
-      }}
-      title="Save"></Button> */}
     </View>
   )
 }
@@ -65,22 +54,20 @@ const styles = StyleSheet.create({
        fontSize:34,
        fontWeight:"bold",
        fontStyle:'italic',
-       color:"#a03",
+       color:"#E59866",
        textAlign: "center",
+       marginBottom:20,
        marginVertical: 10
     },
     container:{
          flex:1,
-         backgroundColor:'#DBD3D8',
-        // alignItems:"center",
-         justifyContent:'flex-start',
-        
-
+         backgroundColor:'#EDBB99',
+         justifyContent:'center',
     },
     button: {
         width:"50%",
          borderRadius:5,
-         backgroundColor:"#e38b73",
+         backgroundColor:"#6e2c00",
          height:40,
          width:100,
          justifyContent:"center",
