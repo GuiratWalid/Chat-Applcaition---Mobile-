@@ -6,20 +6,31 @@ import "firebase/compat/auth";
 //import initfirebase from './index';
 import "firebase/compat/database";
 import "firebase/compat/storage";
+
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  DATABASE_URL,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+  MEASUREMENT_ID,
+} from "@env";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCeP3lt9oLs0AiOV8I14mW0QokdsL4m6no",
-  authDomain: "chat-app-e0631.firebaseapp.com",
-  databaseURL: "https://chat-app-e0631-default-rtdb.firebaseio.com",
-  projectId: "chat-app-e0631",
-  storageBucket: "chat-app-e0631.appspot.com",
-  messagingSenderId: "54009546773",
-  appId: "1:54009546773:web:adcf92a1834c20df24a61c",
-  measurementId: "G-FS8C5Z4TQD"
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  databaseURL: DATABASE_URL,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 };
 
 // Initialize Firebase
