@@ -6,28 +6,76 @@ import initfirebase from "../../config/index";
 import { TouchableOpacity } from "react-native";
 
 export default function Profil() {
-  const [{ nom, prenom, pseudo }, setData] = useState({
+  const [{ nom, prenom, pseudo, image }, setData] = useState({
     nom: "",
     prenom: "",
     pseudo: "",
+    image: null,
   });
+  const imageToBlob = async (uri) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request Failed"));
+      };
+      xhr.responseType = "blob"; //arraybuffer
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+    return blob;
+  };
+
+  const uploadImage = async (uri) => {
+    //convert image to blob
+    const blob = await imageToBlob(uri);
+    //save blob to ref image
+    const ref_img = storage.ref().child("imageprofiles").child("image2.jpg");
+    await ref_img.put(blob);
+    //get url
+    const url = await ref_img.getDownloadURL();
+    return url;
+  };
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result);
+    if (!result.canceled) {
+      setData({ nom, prenom, pseudo, image: result.uri });
+    }
+  };
   const database = initfirebase.database();
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Profil</Text>
-      <Image
-        source={require("../../assets/profil.png")}
-        style={{
-          width: 130,
-          height: 130,
-          borderRadius: 63,
-          borderWidth: 4,
-          borderColor: "white",
-          marginBottom: 10,
-          alignSelf: "center",
-          marginTop: 20,
+      <TouchableOpacity
+        onPress={() => {
+          pickImage();
         }}
-      ></Image>
+      >
+        <Image
+          source={
+            image === null ? require("../../assets/profil.png") : { uri: image }
+          }
+          style={{
+            width: 130,
+            height: 130,
+            borderRadius: 63,
+            borderWidth: 4,
+            borderColor: "white",
+            marginBottom: 10,
+            alignSelf: "center",
+            marginTop: 20,
+          }}
+        ></Image>
+      </TouchableOpacity>
       <TextInput
         onChangeText={(e) => {
           setData({ nom: e, prenom, pseudo });
@@ -51,12 +99,18 @@ export default function Profil() {
       ></TextInput>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          database.ref("profils").child(`profil_${name}`).set({
-            nom,
-            prenom,
-            pseudo,
-          });
+        onPress={async () => {
+          if (image != null) {
+            const url = await uploadImage(image);
+            const ref_profils = database.ref("profils");
+            const key = ref_profils.push().key;
+            ref_profils.child("profil" + key).set({
+              nom: nom,
+              prenom: prenom,
+              pseudo: pseudo,
+              url: url,
+            });
+          }
         }}
       >
         <Text
