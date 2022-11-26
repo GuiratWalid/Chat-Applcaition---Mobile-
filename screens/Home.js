@@ -20,7 +20,7 @@ export default function Accueil() {
       </View>
   </View>*/
     <Tab.Navigator>
-      <Tab.Screen name="list" component={ListProfil} options={{}}></Tab.Screen>
+      <Tab.Screen name="list" component={ListProfil}></Tab.Screen>
       <Tab.Screen name="group" component={Group}></Tab.Screen>
       <Tab.Screen name="profil" component={Profil}></Tab.Screen>
     </Tab.Navigator>

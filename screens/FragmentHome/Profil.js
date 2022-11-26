@@ -1,17 +1,16 @@
 import { View, Text, Image } from "react-native";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import initfirebase from "../../config/index";
 import { TouchableOpacity } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Profil() {
-  const [{ nom, prenom, pseudo, image }, setData] = useState({
-    nom: "",
-    prenom: "",
-    pseudo: "",
-    image: null,
-  });
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [pseudo, setPseudo] = useState("");
+  const [image, setImage] = useState(null);
   const imageToBlob = async (uri) => {
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -38,6 +37,7 @@ export default function Profil() {
     const url = await ref_img.getDownloadURL();
     return url;
   };
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -46,20 +46,19 @@ export default function Profil() {
       aspect: [4, 3],
       quality: 1,
     });
+
     console.log(result);
+
     if (!result.canceled) {
-      setData({ nom, prenom, pseudo, image: result.uri });
+      setImage(result.assets[0].uri);
     }
   };
+
   const database = initfirebase.database();
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Profil</Text>
-      <TouchableOpacity
-        onPress={() => {
-          pickImage();
-        }}
-      >
+      <TouchableOpacity onPress={pickImage}>
         <Image
           source={
             image === null ? require("../../assets/profil.png") : { uri: image }
@@ -78,21 +77,21 @@ export default function Profil() {
       </TouchableOpacity>
       <TextInput
         onChangeText={(e) => {
-          setData({ nom: e, prenom, pseudo });
+          setNom(e);
         }}
         placeholder="nom"
         style={styles.TextInput}
       ></TextInput>
       <TextInput
         onChangeText={(e) => {
-          setData({ nom, prenom: e, pseudo });
+          setPrenom(e);
         }}
         placeholder="prenom"
         style={styles.TextInput}
       ></TextInput>
       <TextInput
         onChangeText={(e) => {
-          setData({ nom, prenom, pseudo: e });
+          setPseudo(e);
         }}
         placeholder="pseudo"
         style={styles.TextInput}

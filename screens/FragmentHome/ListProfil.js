@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import initfirebase from "../../config/index";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function ListProfil(props) {
   const [data, setData] = useState([]);
