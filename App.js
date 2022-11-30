@@ -26,7 +26,6 @@ export default function App() {
           component={Home}
           options={{ headerShown: false }}
         ></Stack.Screen>
-        {/* <Stack.Screen name="Chat" component={Chat}></Stack.Screen> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

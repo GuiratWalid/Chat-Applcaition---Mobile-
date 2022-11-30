@@ -6,7 +6,9 @@ import initfirebase from "../../config/index";
 import { TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-export default function Profil() {
+export default function Profil({ navigation }) {
+  const database = initfirebase.database();
+  const storage = initfirebase.storage();
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
   const [pseudo, setPseudo] = useState("");
@@ -31,7 +33,10 @@ export default function Profil() {
     //convert image to blob
     const blob = await imageToBlob(uri);
     //save blob to ref image
-    const ref_img = storage.ref().child("imageprofiles").child("image2.jpg");
+    const ref_img = storage
+      .ref()
+      .child("imageprofiles")
+      .child("image" + Math.random() * Math.pow(10, 17) + ".jpg");
     await ref_img.put(blob);
     //get url
     const url = await ref_img.getDownloadURL();
@@ -54,7 +59,6 @@ export default function Profil() {
     }
   };
 
-  const database = initfirebase.database();
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Profil</Text>
@@ -109,6 +113,18 @@ export default function Profil() {
               pseudo: pseudo,
               url: url,
             });
+            navigation.navigate("list");
+          } else {
+            const url = await uploadImage(image);
+            const ref_profils = database.ref("profils");
+            const key = ref_profils.push().key;
+            ref_profils.child("profil" + key).set({
+              nom: nom,
+              prenom: prenom,
+              pseudo: pseudo,
+              url: null,
+            });
+            navigation.navigate("list");
           }
         }}
       >

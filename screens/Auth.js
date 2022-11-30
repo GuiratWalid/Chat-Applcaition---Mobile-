@@ -6,8 +6,8 @@ import { TouchableOpacity } from "react-native";
 import initfirebase from "../config";
 
 export default function Auth(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("walid@test.com");
+  const [password, setPassword] = useState("123456");
   const auth = initfirebase.auth();
   return (
     <View style={styles.container}>

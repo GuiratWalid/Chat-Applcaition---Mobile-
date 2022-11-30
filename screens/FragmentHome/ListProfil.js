@@ -1,9 +1,13 @@
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import initfirebase from "../../config/index";
+import { Dialog, Button } from "react-native-paper";
+import { TouchableOpacity } from "react-native-web";
 
 export default function ListProfil(props) {
   const [data, setData] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
   const database = initfirebase.database();
   //te5ou ref mil profile
   const ref_profils = database.ref("profils");
@@ -20,6 +24,7 @@ export default function ListProfil(props) {
             nom: dd[val].nom,
             prenom: dd[val].prenom,
             pseudo: dd[val].pseudo,
+            url: dd[val].url,
           };
         })
       );
@@ -34,11 +39,22 @@ export default function ListProfil(props) {
         style={{ width: "100%", height: "100%" }}
         renderItem={({ item }) => (
           <View style={styles.view}>
-            <Image
-              style={{ width: 70, height: 70 }}
-              source={require("../../assets/profil.png")}
-              resizeMode="center"
-            ></Image>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedUser(item);
+                setVisible(true);
+              }}
+            >
+              <Image
+                style={{ width: 70, height: 70 }}
+                source={
+                  item.url === undefined
+                    ? require("../../assets/profil.png")
+                    : { uri: item.url }
+                }
+                resizeMode="center"
+              ></Image>
+            </TouchableOpacity>
             <View style={{ alignItems: "flex-start", margin: 10 }}>
               <Text
                 style={{
@@ -55,7 +71,6 @@ export default function ListProfil(props) {
                   fontWeight: "bold",
                   alignSelf: "center",
                 }}
-                onPress={() => props.navigation.replace("chat")}
               >
                 {item.pseudo}
               </Text>
@@ -63,6 +78,48 @@ export default function ListProfil(props) {
           </View>
         )}
       ></FlatList>
+      <Dialog
+        style={{
+          backgroundColor: "white",
+          borderRadius: 8,
+        }}
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+      >
+        <Dialog.Title>Les informations de l'utilisateur</Dialog.Title>
+        <Dialog.Content>
+          <Image
+            style={{ width: 70, height: 70 }}
+            source={
+              selectedUser.url === undefined
+                ? require("../../assets/profil.png")
+                : { uri: selectedUser.url }
+            }
+            resizeMode="center"
+          ></Image>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: "bold",
+              alignSelf: "center",
+            }}
+          >
+            {selectedUser.nom}
+          </Text>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: "bold",
+              alignSelf: "center",
+            }}
+          >
+            {selectedUser.pseudo}
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setVisible(false)}>OK</Button>
+        </Dialog.Actions>
+      </Dialog>
     </View>
   );
 }
